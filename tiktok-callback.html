@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Connect TikTok · Animated Motivation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <p><a href="index.html">← Animated Motivation</a></p>
+  <h1>Connect TikTok</h1>
+  <p class="lead">For the channel owner only. This links the Animated Motivation TikTok account to our private uploader, which sends finished videos to the account's TikTok drafts.</p>
+  <div id="start">
+    <p><a class="btn" id="go" href="#">Connect with TikTok</a></p>
+  </div>
+  <div id="done" hidden>
+    <h2>Almost done</h2>
+    <p>Copy this code and paste it into the <strong>TikTok connect</strong> workflow on GitHub within 5 minutes:</p>
+    <p><code id="code" style="word-break:break-all;font-size:1.1rem"></code></p>
+    <p><button class="btn" id="copy" type="button">Copy code</button> <span id="copied" class="muted"></span></p>
+  </div>
+  <p id="err" class="muted"></p>
+  <footer><a href="privacy.html">Privacy policy</a> · <a href="terms.html">Terms</a></footer>
+</main>
+<script>
+const CLIENT_KEY = "sbawxy3h4qwiyp76x3";
+const REDIRECT = "https://surajwolves-dotcom.github.io/tiktok-callback.html";
+const q = new URLSearchParams(location.search);
+if (q.get("code")) {
+  document.getElementById("start").hidden = true;
+  document.getElementById("done").hidden = false;
+  document.getElementById("code").textContent = q.get("code");
+  document.getElementById("copy").onclick = async () => {
+    try { await navigator.clipboard.writeText(q.get("code")); document.getElementById("copied").textContent = "Copied"; }
+    catch (e) { document.getElementById("copied").textContent = "Select the code and copy it manually"; }
+  };
+} else if (q.get("error")) {
+  document.getElementById("err").textContent = "TikTok said: " + (q.get("error_description") || q.get("error"));
+}
+document.getElementById("go").href = "https://www.tiktok.com/v2/auth/authorize/?" + new URLSearchParams({
+  client_key: CLIENT_KEY, scope: "user.info.basic,video.upload", response_type: "code",
+  redirect_uri: REDIRECT, state: Math.random().toString(36).slice(2)
+});
+</script>
+</body>
+</html>
